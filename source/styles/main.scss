@@ -1,5 +1,17 @@
 $color-primary: #13567E;
 
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+*,
+::before,
+::after {
+  box-sizing: inherit;
+}
+
 body {
+  font-size: 1.6rem;
   color: $color-primary;
 }
