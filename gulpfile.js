@@ -4,6 +4,8 @@ const gulp = require('gulp');
 const sass = require('gulp-sass');
 const notify = require('gulp-notify');
 const plumber = require('gulp-plumber');
+const concat = require('gulp-concat');
+const uglify = require('gulp-uglify');
 const cleanCSS = require('gulp-clean-css');
 const rename = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
@@ -36,4 +38,17 @@ gulp.task('sass', function() {
     // .pipe(cleanCSS())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('build/css'));
+});
+
+/* Scripts compile */
+gulp.task('scripts', () => {
+  return gulp.src([
+      'source/js/lib.js',
+      'source/js/main.js'
+     ])
+    .pipe(sourcemaps.init())
+    .pipe(concat('main.min.js'))
+    // .pipe(uglify())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('build/js'))
 });
