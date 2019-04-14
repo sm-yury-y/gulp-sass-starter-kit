@@ -1,6 +1,7 @@
 'use strict';
 
 const gulp = require('gulp');
+const browserSync = require('browser-sync').create();
 const sass = require('gulp-sass');
 const notify = require('gulp-notify');
 const plumber = require('gulp-plumber');
@@ -11,6 +12,25 @@ const rename = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
 const sourcemaps = require('gulp-sourcemaps');
 
+
+/* BrowserSync */
+gulp.task('browser-sync', function() {
+  browserSync.init({
+    server: {
+      baseDir: "build"
+    },
+    notify: false
+  });
+
+  gulp.watch('build/**/*.*').on('change', browserSync.reload);
+});
+
+/* Copy all HTML files */
+gulp.task('html', function(done) {
+  gulp.src('source/*.html')
+    .pipe(gulp.dest('build'));
+    done();
+});
 
 /* Styles compile */
 gulp.task('sass', function() {
@@ -41,7 +61,7 @@ gulp.task('sass', function() {
 });
 
 /* Scripts compile */
-gulp.task('scripts', () => {
+gulp.task('scripts', function() {
   return gulp.src([
       'source/js/lib.js',
       'source/js/main.js'
@@ -52,3 +72,16 @@ gulp.task('scripts', () => {
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('build/js'))
 });
+
+
+gulp.task('watch', function () {
+	gulp.watch('source/*.html', gulp.parallel('html'));
+	gulp.watch('source/styles/*.scss', gulp.series('sass'));
+	gulp.watch('source/js/*.js', gulp.series('scripts'));
+});
+
+gulp.task('default', gulp.series(
+    gulp.series('html'),
+    gulp.parallel('sass', 'scripts'),
+    gulp.parallel('watch', 'browser-sync')
+));
