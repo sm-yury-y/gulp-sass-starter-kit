@@ -11,6 +11,7 @@ const cleanCSS = require('gulp-clean-css');
 const rename = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
 const sourcemaps = require('gulp-sourcemaps');
+const del = require('del');
 
 
 /* BrowserSync */
@@ -73,6 +74,10 @@ gulp.task('scripts', function() {
     .pipe(gulp.dest('build/js'))
 });
 
+
+gulp.task('del', function() {
+  return del('build');
+});
 
 gulp.task('watch', function () {
 	gulp.watch('source/*.html', gulp.parallel('html'));
