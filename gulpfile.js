@@ -12,7 +12,23 @@ const rename = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
 const sourcemaps = require('gulp-sourcemaps');
 const del = require('del');
+const imagemin = require('gulp-imagemin');
 
+
+let paths = {
+  src: {
+    html: 'source/*.html',
+    scss: 'source/styles/main.scss',
+    js:   'source/js/main.js',
+    img:  'source/images/**/*'
+  },
+  dest: {
+    html: 'build/',
+    css:  'build/css',
+    js:   'build/js',
+    img:  'build/images'
+  }
+};
 
 /* BrowserSync */
 gulp.task('browser-sync', function() {
@@ -28,14 +44,14 @@ gulp.task('browser-sync', function() {
 
 /* Copy all HTML files */
 gulp.task('html', function(done) {
-  gulp.src('source/*.html')
-    .pipe(gulp.dest('build'));
+  gulp.src(paths.src.html)
+    .pipe(gulp.dest(paths.dest.html));
     done();
 });
 
 /* Styles compile */
 gulp.task('sass', function() {
-  return gulp.src('source/styles/main.scss')
+  return gulp.src(paths.src.scss)
     .pipe(plumber({
       errorHandler: notify.onError((err) => {
         return {
@@ -58,31 +74,37 @@ gulp.task('sass', function() {
     // }))
     // .pipe(cleanCSS())
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('build/css'));
+    .pipe(gulp.dest(paths.dest.css));
 });
 
 /* Scripts compile */
 gulp.task('scripts', function() {
-  return gulp.src([
-      'source/js/lib.js',
-      'source/js/main.js'
-     ])
+  return gulp.src(paths.src.js)
     .pipe(sourcemaps.init())
     .pipe(concat('main.min.js'))
     // .pipe(uglify())
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('build/js'))
+    .pipe(gulp.dest(paths.dest.js))
 });
 
+gulp.task('imagemin', function() {
+  return gulp.src(paths.src.img)
+    .pipe(imagemin({
+      interlaced: true,
+      progressive: true,
+     optimizationLevel: 5,
+    }))
+    .pipe(gulp.dest(paths.dest.img));
+});
 
 gulp.task('del', function() {
   return del('build');
 });
 
 gulp.task('watch', function () {
-	gulp.watch('source/*.html', gulp.parallel('html'));
-	gulp.watch('source/styles/*.scss', gulp.series('sass'));
-	gulp.watch('source/js/*.js', gulp.series('scripts'));
+	gulp.watch(paths.src.html, gulp.parallel('html'));
+	gulp.watch(paths.src.scss, gulp.series('sass'));
+	gulp.watch(paths.src.js, gulp.series('scripts'));
 });
 
 gulp.task('default', gulp.series(
