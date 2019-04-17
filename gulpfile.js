@@ -31,7 +31,7 @@ let paths = {
 };
 
 /* BrowserSync */
-gulp.task('browser-sync', function() {
+gulp.task('browser-sync', () => {
   browserSync.init({
     server: {
       baseDir: "build"
@@ -43,14 +43,14 @@ gulp.task('browser-sync', function() {
 });
 
 /* Copy all HTML files */
-gulp.task('html', function(done) {
+gulp.task('html', (done) => {
   gulp.src(paths.src.html)
     .pipe(gulp.dest(paths.dest.html));
     done();
 });
 
 /* Styles compile */
-gulp.task('sass', function() {
+gulp.task('sass', () => {
   return gulp.src(paths.src.scss)
     .pipe(plumber({
       errorHandler: notify.onError((err) => {
@@ -78,7 +78,7 @@ gulp.task('sass', function() {
 });
 
 /* Scripts compile */
-gulp.task('scripts', function() {
+gulp.task('scripts', () => {
   return gulp.src(paths.src.js)
     .pipe(sourcemaps.init())
     .pipe(concat('main.min.js'))
@@ -87,7 +87,7 @@ gulp.task('scripts', function() {
     .pipe(gulp.dest(paths.dest.js))
 });
 
-gulp.task('imagemin', function() {
+gulp.task('imagemin', () => {
   return gulp.src(paths.src.img)
     .pipe(imagemin({
       interlaced: true,
@@ -97,11 +97,11 @@ gulp.task('imagemin', function() {
     .pipe(gulp.dest(paths.dest.img));
 });
 
-gulp.task('del', function() {
+gulp.task('del', () => {
   return del('build');
 });
 
-gulp.task('watch', function () {
+gulp.task('watch', () => {
 	gulp.watch(paths.src.html, gulp.parallel('html'));
 	gulp.watch(paths.src.scss, gulp.series('sass'));
 	gulp.watch(paths.src.js, gulp.series('scripts'));
